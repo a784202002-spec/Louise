@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1f4e78">
+  <title>報修登記</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>報修登記</h1>
+    <p>填寫下方表單送出報修，送出後會出現在清單中。</p>
+  </header>
+
+  <main>
+    <section class="card" aria-labelledby="form-title">
+      <h2 id="form-title">新增報修</h2>
+      <form id="repair-form" novalidate>
+        <div class="field">
+          <label for="reporter_name">報修人</label>
+          <input id="reporter_name" name="reporter_name" type="text" maxlength="50"
+                 autocomplete="name" required placeholder="例如：陳虛構">
+        </div>
+
+        <div class="field">
+          <label for="location">地點或部門</label>
+          <input id="location" name="location" type="text" maxlength="100"
+                 required placeholder="例如：工地 A 區、資訊部">
+        </div>
+
+        <fieldset class="field">
+          <legend>類別</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="category" value="設備" required><span>設備</span></label>
+            <label class="choice"><input type="radio" name="category" value="網路"><span>網路</span></label>
+            <label class="choice"><input type="radio" name="category" value="環境"><span>環境</span></label>
+            <label class="choice"><input type="radio" name="category" value="其他"><span>其他</span></label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="description">問題說明</label>
+          <textarea id="description" name="description" rows="4" maxlength="1000"
+                    required placeholder="請描述發生了什麼問題"></textarea>
+          <small class="hint"><span id="description-count">0</span> / 1000 字</small>
+        </div>
+
+        <fieldset class="field">
+          <legend>緊急程度</legend>
+          <div class="choices">
+            <label class="choice"><input type="radio" name="urgency" value="低"><span>低</span></label>
+            <label class="choice"><input type="radio" name="urgency" value="中" checked><span>中</span></label>
+            <label class="choice"><input type="radio" name="urgency" value="高"><span>高</span></label>
+          </div>
+        </fieldset>
+
+        <button id="submit-button" type="submit">送出報修</button>
+        <p id="form-message" class="message" role="status" aria-live="polite" hidden></p>
+      </form>
+    </section>
+
+    <section class="card" aria-labelledby="list-title">
+      <div class="list-header">
+        <h2 id="list-title">最近 20 筆報修</h2>
+        <button id="refresh-button" type="button" class="secondary">重新整理</button>
+      </div>
+      <p id="list-message" class="message" role="status" aria-live="polite" hidden></p>
+      <ul id="repair-list" class="repair-list"></ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">示範系統，資料皆為虛構，請勿填寫真實個人資料。</footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
