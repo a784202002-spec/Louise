@@ -1,0 +1,217 @@
+/* 顏色與基本設定 */
+:root {
+  --bg: #f3f6f5;
+  --card: #ffffff;
+  --text: #1c2724;
+  --muted: #5a6964;
+  --border: #d2dcd8;
+  --primary: #2f5d50;
+  --primary-hover: #234a3f;
+  --ok-bg: #e6f4ea;
+  --ok-text: #1e6b34;
+  --err-bg: #fdecea;
+  --err-text: #a12622;
+  --pending: #8a6100;
+  --approved: #1e6b34;
+  --rejected: #a12622;
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121816;
+    --card: #1a2320;
+    --text: #e4ece9;
+    --muted: #98a8a2;
+    --border: #2e3b37;
+    --primary: #5fae95;
+    --primary-hover: #7cc2ab;
+    --ok-bg: #173323;
+    --ok-text: #8fd9a8;
+    --err-bg: #3a1c1b;
+    --err-text: #f2a19c;
+    --pending: #e0b54a;
+    --approved: #8fd9a8;
+    --rejected: #f2a19c;
+  }
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 16px; /* 16px 以上，iPhone 點輸入框時不會自動放大 */
+  line-height: 1.6;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.site-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 8px;
+}
+.header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.site-header h1 { margin: 0; font-size: 1.6rem; }
+.site-header p { margin: 4px 0 0; color: var(--muted); }
+.user-box { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.user-label { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+
+.site-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0 16px 32px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-top: 16px;
+}
+.card h2 { margin: 0 0 12px; font-size: 1.2rem; }
+
+/* 表單 */
+.field { margin: 0 0 16px; padding: 0; border: 0; min-width: 0; }
+.field > label, .field > legend {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+.optional { font-weight: 400; color: var(--muted); font-size: 0.9rem; }
+
+.two-col { display: grid; grid-template-columns: 1fr; gap: 0 12px; }
+@media (min-width: 560px) {
+  .two-col { grid-template-columns: 1fr 1fr; }
+}
+
+input[type="text"], input[type="email"], input[type="password"],
+input[type="number"], input[type="datetime-local"], textarea {
+  width: 100%;
+  min-width: 0;
+  font: inherit;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  min-height: 48px;
+}
+input[type="datetime-local"] { -webkit-appearance: none; appearance: none; }
+textarea { resize: vertical; min-height: 90px; }
+input:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+.field.invalid input, .field.invalid textarea { border-color: var(--err-text); }
+.hint { display: block; color: var(--muted); font-size: 0.85rem; margin: 4px 0 0; }
+
+/* 選項按鈕：手機上大一點比較好點 */
+.choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.choice { position: relative; min-width: 0; }
+.choice input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice span {
+  display: block;
+  text-align: center;
+  padding: 12px 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  user-select: none;
+}
+.choice input:checked + span {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+.choice input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 2px; }
+.field.invalid .choice span { border-color: var(--err-text); }
+
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 8px;
+  padding: 14px 20px;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+}
+button:hover { background: var(--primary-hover); }
+button:disabled { opacity: 0.6; cursor: wait; }
+button.wide { width: 100%; }
+button.secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+button.secondary:hover { background: var(--bg); }
+button.small { padding: 8px 14px; }
+button.approve { background: var(--approved); }
+button.reject { background: var(--rejected); }
+
+/* 訊息 */
+.message {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+.message.ok { background: var(--ok-bg); color: var(--ok-text); }
+.message.error { background: var(--err-bg); color: var(--err-text); }
+.message.info { color: var(--muted); padding: 0; }
+
+/* 清單 */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.list-header h2 { margin: 0; }
+
+.leave-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.leave-item { border-top: 1px solid var(--border); padding: 12px 0; }
+.leave-item:first-child { border-top: 0; }
+.leave-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.leave-name { font-weight: 600; overflow-wrap: anywhere; }
+.leave-period { margin: 4px 0 0; }
+.leave-detail { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
+.leave-reason { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.leave-created { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
+.leave-actions { display: flex; gap: 8px; margin-top: 8px; }
+.leave-actions button { flex: 1; padding: 10px 12px; }
+
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.tag.status-待審核 { color: var(--pending); border-color: var(--pending); }
+.tag.status-已核准 { color: var(--approved); border-color: var(--approved); }
+.tag.status-已退回 { color: var(--rejected); border-color: var(--rejected); }
