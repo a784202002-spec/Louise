@@ -1,0 +1,207 @@
+/* 顏色與基本設定 */
+:root {
+  --bg: #f3f5f8;
+  --card: #ffffff;
+  --text: #1d2733;
+  --muted: #5b6878;
+  --border: #d3dae3;
+  --primary: #1f4e78;
+  --primary-hover: #173b5c;
+  --ok-bg: #e6f4ea;
+  --ok-text: #1e6b34;
+  --err-bg: #fdecea;
+  --err-text: #a12622;
+  --low: #3b7d4f;
+  --mid: #9a6a00;
+  --high: #b3261e;
+  --radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12171d;
+    --card: #1b222b;
+    --text: #e6ebf1;
+    --muted: #9aa7b6;
+    --border: #2f3a47;
+    --primary: #4a8fd1;
+    --primary-hover: #6aa5dd;
+    --ok-bg: #173323;
+    --ok-text: #8fd9a8;
+    --err-bg: #3a1c1b;
+    --err-text: #f2a19c;
+    --low: #7cc893;
+    --mid: #e0b54a;
+    --high: #f08a83;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  font-size: 16px; /* 16px 以上，iPhone 點輸入框時不會自動放大 */
+  line-height: 1.6;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.site-header {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 8px;
+}
+.site-header h1 { margin: 0; font-size: 1.6rem; }
+.site-header p { margin: 4px 0 0; color: var(--muted); }
+
+.site-footer {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0 16px 32px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  margin-top: 16px;
+}
+.card h2 { margin: 0 0 12px; font-size: 1.2rem; }
+
+/* 表單 */
+.field { margin: 0 0 16px; padding: 0; border: 0; min-width: 0; }
+.field > label, .field > legend {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+input[type="text"], textarea {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+}
+textarea { resize: vertical; min-height: 110px; }
+input[type="text"]:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+.field.invalid input, .field.invalid textarea { border-color: var(--err-text); }
+.hint { color: var(--muted); font-size: 0.85rem; }
+
+/* 選項按鈕：手機上大一點比較好點 */
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choice { position: relative; flex: 1 1 calc(25% - 8px); min-width: 64px; }
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.choice span {
+  display: block;
+  text-align: center;
+  padding: 12px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  user-select: none;
+}
+.choice input:checked + span {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+  font-weight: 600;
+}
+.choice input:focus-visible + span { outline: 2px solid var(--primary); outline-offset: 2px; }
+.field.invalid .choice span { border-color: var(--err-text); }
+
+button {
+  font: inherit;
+  font-weight: 600;
+  border: 0;
+  border-radius: 8px;
+  padding: 14px 20px;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
+}
+button:hover { background: var(--primary-hover); }
+button:disabled { opacity: 0.6; cursor: wait; }
+#submit-button { width: 100%; }
+button.secondary {
+  background: transparent;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  padding: 8px 14px;
+}
+button.secondary:hover { background: var(--bg); }
+
+/* 訊息 */
+.message {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+.message.ok { background: var(--ok-bg); color: var(--ok-text); }
+.message.error { background: var(--err-bg); color: var(--err-text); }
+.message.info { color: var(--muted); padding: 0; }
+
+/* 清單 */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+.list-header h2 { margin: 0; }
+
+.repair-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.repair-item {
+  border-top: 1px solid var(--border);
+  padding: 12px 0;
+}
+.repair-item:first-child { border-top: 0; }
+.repair-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.repair-desc {
+  margin: 6px 0 4px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.repair-who { font-size: 0.9rem; color: var(--muted); overflow-wrap: anywhere; }
+
+.tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.tag.urgency-低 { color: var(--low); border-color: var(--low); }
+.tag.urgency-中 { color: var(--mid); border-color: var(--mid); }
+.tag.urgency-高 { color: var(--high); border-color: var(--high); font-weight: 600; }
+.repair-time { margin-left: auto; }
