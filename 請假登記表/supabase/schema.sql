@@ -6,13 +6,17 @@
 -- 注意：本檔案只產生、尚未執行過。
 --
 -- 權限設計（依需求筆記「誰能做什麼」）：
---   ・未登入（anon）：什麼都看不到，也不能新增。→ anon 不給任何權限。
+--   目前階段：先不登入，只做請假表單。
+--   ・未登入（anon）：只能「送出」請假，狀態一律為「待審核」；
+--     不能讀取任何紀錄（網頁上看不到清單），也不能修改或刪除。
+--     主管目前到 Supabase 後台的 Table Editor 查看與審核。
+--   之後加上登入時（以下規則已先寫好，現在沒有人會用到）：
 --   ・一般同仁（已登入）：只能新增自己的請假，只能看自己的紀錄。
 --   ・主管（已登入，且列在 leave_managers）：能看全部，只能修改審核狀態。
 --   ・任何人都不能刪除紀錄。
 --
 -- 待確認：需求筆記還沒決定「登入方式」與「怎麼判斷誰是主管」。
---   這裡先假設使用 Supabase Auth 登入，主管名單放在 leave_managers 表，
+--   登入規則先假設使用 Supabase Auth 登入，主管名單放在 leave_managers 表，
 --   由管理者在 Supabase 後台手動維護。決定後可能需要調整。
 -- =====================================================================
 
@@ -32,8 +36,9 @@ create table if not exists public.leave_requests (
   created_at     timestamptz   not null default now(),
 
   -- 請假人帳號：自動帶入登入者的帳號編號，用來判斷「只能看自己的紀錄」
+  -- 目前不登入，所以從表單送出的紀錄這一欄一律是空的（null）
   -- 帳號被刪除時，不連帶刪除請假紀錄（restrict），避免紀錄消失
-  user_id        uuid          not null default auth.uid()
+  user_id        uuid          default auth.uid()
                                references auth.users (id) on delete restrict,
 
   -- 請假人姓名：必填，1～50 字（示範一律使用虛構姓名）
@@ -74,6 +79,9 @@ create table if not exists public.leave_requests (
   constraint leave_requests_time_order
     check (end_at > start_at)
 );
+
+-- 如果之前已經用舊版（user_id 必填）建過這張表，這行把 user_id 改成可以空白
+alter table public.leave_requests alter column user_id drop not null;
 
 comment on table  public.leave_requests                is '請假紀錄（示範資料，全為虛構）';
 comment on column public.leave_requests.id             is '主鍵，自動產生';
@@ -129,8 +137,13 @@ comment on function public.is_leave_manager() is '目前登入者是否為主管
 -- 這個 Supabase 專案不會自動開放新資料表，所以要明確授權。
 -- 先收回所有權限，確保沒有殘留的舊授權，再只開放需要的部分：
 --
---   anon（未登入）：
---     ・需求筆記規定未登入什麼都不能做，所以 anon 不給任何權限。
+--   anon（未登入，目前的請假表單用這個角色）：
+--     ・INSERT：只能新增同仁要填的七個欄位，和下方 authenticated 相同。
+--       不開放 id、created_at、user_id、status，一律用預設值，
+--       所以 user_id 會是空的，狀態一定是「待審核」。
+--     ・不給 SELECT：未登入的人讀不到任何紀錄（事由可能涉及健康等私人資訊）。
+--       送出時前端不要求回傳資料，所以不需要讀取權限。
+--     ・不給 UPDATE、DELETE、TRUNCATE。
 --
 --   authenticated（已登入，同仁與主管都是這個角色）：
 --     ・SELECT：可以讀取；能讀到哪些列，由下方 RLS 決定。
@@ -149,7 +162,7 @@ revoke all on table public.leave_managers from public, anon, authenticated;
 grant select on table public.leave_requests to authenticated;
 
 grant insert (applicant_name, leave_type, start_at, end_at, hours, deputy_name, reason)
-  on table public.leave_requests to authenticated;
+  on table public.leave_requests to anon, authenticated;
 
 grant update (status) on table public.leave_requests to authenticated;
 
@@ -162,13 +175,25 @@ grant execute on function public.is_leave_manager() to authenticated;
 -- 啟用 RLS 後，沒有政策允許的操作一律被拒絕。
 -- 這是 GRANT 之外的第二道防線：就算之後有人不小心多給了權限，
 -- 沒有對應的政策，該操作仍然做不到。
--- 所有政策都只對 authenticated；anon 沒有任何政策。
+-- anon 只有一條「新增」政策；其餘政策都只對 authenticated。
 -- auth.uid() 外面包一層 select，讓資料庫每次查詢只算一次，效能較好。
 -- 先刪除同名政策再建立，讓這份檔案可以重複執行。
 -- ---------------------------------------------------------------------
 alter table public.leave_requests enable row level security;
 alter table public.leave_managers enable row level security;
 -- leave_managers 刻意不建立任何政策：前端完全讀寫不到。
+
+-- 新增（未登入）：任何人都可以送出請假，但不能冒用帳號，狀態只能是「待審核」
+-- anon 沒有讀取政策，所以送出後在網頁上看不到任何紀錄。
+drop policy if exists "未登入可以送出請假，狀態限待審核" on public.leave_requests;
+create policy "未登入可以送出請假，狀態限待審核"
+  on public.leave_requests
+  for insert
+  to anon
+  with check (
+    user_id is null
+    and status = '待審核'
+  );
 
 -- 讀取：同仁只能看到自己的紀錄
 drop policy if exists "同仁可以讀取自己的請假" on public.leave_requests;
