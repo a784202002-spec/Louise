@@ -59,17 +59,8 @@ main {
   margin: 0 auto;
   padding: 24px 16px 8px;
 }
-.header-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
 .site-header h1 { margin: 0; font-size: 1.6rem; }
 .site-header p { margin: 4px 0 0; color: var(--muted); }
-.user-box { display: flex; align-items: center; gap: 8px; min-width: 0; }
-.user-label { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
 
 .site-footer {
   text-align: center;
@@ -102,8 +93,7 @@ main {
   .two-col { grid-template-columns: 1fr 1fr; }
 }
 
-input[type="text"], input[type="email"], input[type="password"],
-input[type="number"], input[type="datetime-local"], textarea {
+input[type="text"], input[type="number"], input[type="datetime-local"], textarea {
   width: 100%;
   min-width: 0;
   font: inherit;
@@ -159,15 +149,6 @@ button {
 button:hover { background: var(--primary-hover); }
 button:disabled { opacity: 0.6; cursor: wait; }
 button.wide { width: 100%; }
-button.secondary {
-  background: transparent;
-  color: var(--primary);
-  border: 1px solid var(--border);
-}
-button.secondary:hover { background: var(--bg); }
-button.small { padding: 8px 14px; }
-button.approve { background: var(--approved); }
-button.reject { background: var(--rejected); }
 
 /* 訊息 */
 .message {
@@ -177,41 +158,3 @@ button.reject { background: var(--rejected); }
 }
 .message.ok { background: var(--ok-bg); color: var(--ok-text); }
 .message.error { background: var(--err-bg); color: var(--err-text); }
-.message.info { color: var(--muted); padding: 0; }
-
-/* 清單 */
-.list-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-.list-header h2 { margin: 0; }
-
-.leave-list { list-style: none; margin: 8px 0 0; padding: 0; }
-.leave-item { border-top: 1px solid var(--border); padding: 12px 0; }
-.leave-item:first-child { border-top: 0; }
-.leave-top {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  align-items: center;
-}
-.leave-name { font-weight: 600; overflow-wrap: anywhere; }
-.leave-period { margin: 4px 0 0; }
-.leave-detail { color: var(--muted); font-size: 0.9rem; overflow-wrap: anywhere; }
-.leave-reason { margin: 4px 0 0; white-space: pre-wrap; overflow-wrap: anywhere; }
-.leave-created { color: var(--muted); font-size: 0.8rem; margin-top: 4px; }
-.leave-actions { display: flex; gap: 8px; margin-top: 8px; }
-.leave-actions button { flex: 1; padding: 10px 12px; }
-
-.tag {
-  display: inline-block;
-  padding: 1px 8px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 0.8rem;
-}
-.tag.status-待審核 { color: var(--pending); border-color: var(--pending); }
-.tag.status-已核准 { color: var(--approved); border-color: var(--approved); }
-.tag.status-已退回 { color: var(--rejected); border-color: var(--rejected); }
